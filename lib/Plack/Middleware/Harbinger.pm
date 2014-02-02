@@ -3,14 +3,23 @@ package Plack::Middleware::Harbinger;
 use Moo;
 
 extends 'Plack::Middleware';
-use Sereal::Encoder 'encode_sereal';
-use Time::HiRes;
-use DBIx::Class::QueryLog;
+use Harbinger::Client;
 use namespace::clean;
 use IO::Socket::INET;
-use Module::Runtime 'use_module';
-use List::Util 'first';
-use Try::Tiny;
+
+has _harbinger_client => (
+   is => 'ro',
+   lazy => 1,
+   builder => sub {
+      my $self = shift;
+
+      Harbinger::Client->new(
+         harbinger_ip => $self->_harbinger_ip,
+         harbinger_port => $self->_harbinger_port,
+         default_args => $self->_default_args,
+      )
+   },
+);
 
 has _harbinger_ip => (
    is => 'ro',
@@ -24,6 +33,12 @@ has _harbinger_port => (
    init_arg => 'harbinger_port',
 );
 
+has _default_args => (
+   is => 'ro',
+   default => sub { [] },
+   init_arg => 'default_args',
+);
+
 has _udp_handle => (
    is => 'ro',
    builder => sub {
@@ -35,53 +50,22 @@ has _udp_handle => (
    },
 );
 
-sub measure_memory {
-   my $ret = try {
-      if ($^O eq 'MSWin32') {
-         use_module('Win32::Process::Memory')
-            ->new({ pid  => $$ })
-            ->get_memtotal
-      } else {
-         (
-            first { $_->pid == $$ } @{
-               use_module('Proc::ProcessTable')
-               ->new
-               ->table
-            }
-         )->rss
-      }
-   } catch { 0 };
-
-   int($ret / 1024)
-}
-
 sub call {
    my ($self, $env) = @_;
 
+   my $doom = $self->_harbinger_client->start;
    # this needs to somehow pass through / wrap the other logger too
-   my $ql    = DBIx::Class::QueryLog->new;
-   my $start = [ Time::HiRes::gettimeofday ];
-   my $start_mem = measure_memory();
-   $env->{'harbinger.querylog'} = $ql;
+   $env->{'harbinger.querylog'} = $doom->_ql;
    my $res = $self->app->($env);
 
    $self->response_cb($res, sub {
-      my $elapsed = int(Time::HiRes::tv_interval($start) * 1000);
-
-      my $msg = encode_sereal({
+      $doom->finish(
          server => $env->{'harbinger.server'},
          ident  => $env->{'harbinger.ident'} || $env->{PATH_INFO},
-         pid    => $$,
          port   => $env->{'harbinger.port'} || $env->{SERVER_PORT},
+      );
 
-         ms     => $elapsed,
-         qc     => $ql->count,
-         mg     => measure_memory() - $start_mem,
-      });
-
-      # seems appropriately defanged
-      send($self->_udp_handle, $msg, 0) == length($msg)
-         or warn "cannot send to: $!";
+      $self->_harbinger_client->send($doom)
    })
 }
 
