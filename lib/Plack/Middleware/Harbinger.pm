@@ -72,7 +72,7 @@ sub call {
          server => $env->{'harbinger.server'},
          ident  => $env->{'harbinger.ident'} || $env->{PATH_INFO},
          pid    => $$,
-         # include port
+         port   => $env->{'harbinger.port'} || $env->{SERVER_PORT},
 
          ms     => $elapsed,
          qc     => $ql->count,
