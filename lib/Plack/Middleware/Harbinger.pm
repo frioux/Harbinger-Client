@@ -8,6 +8,9 @@ use Time::HiRes;
 use DBIx::Class::QueryLog;
 use namespace::clean;
 use IO::Socket::INET;
+use Module::Runtime 'use_module';
+use List::Util 'first';
+use Try::Tiny;
 
 has _harbinger_ip => (
    is => 'ro',
@@ -32,12 +35,33 @@ has _udp_handle => (
    },
 );
 
+sub measure_memory {
+   my $ret = try {
+      if ($^O eq 'MSWin32') {
+         use_module('Win32::Process::Memory')
+            ->new({ pid  => $$ })
+            ->get_memtotal
+      } else {
+         (
+            first { $_->pid == $$ } @{
+               use_module('Proc::ProcessTable')
+               ->new
+               ->table
+            }
+         )->rss
+      }
+   } catch { 0 };
+
+   int($ret / 1024)
+}
+
 sub call {
    my ($self, $env) = @_;
 
    # this needs to somehow pass through / wrap the other logger too
    my $ql    = DBIx::Class::QueryLog->new;
    my $start = [ Time::HiRes::gettimeofday ];
+   my $start_mem = measure_memory();
    $env->{'harbinger.querylog'} = $ql;
    my $res = $self->app->($env);
 
@@ -52,7 +76,7 @@ sub call {
 
          ms     => $elapsed,
          qc     => $ql->count,
-         # include memory growth
+         mg     => measure_memory() - $start_mem,
       });
 
       # seems appropriately defanged

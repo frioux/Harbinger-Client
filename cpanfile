@@ -4,3 +4,6 @@ requires 'Sereal::Encoder';
 requires 'Time::HiRes';
 requires 'DBIx::Class::QueryLog';
 requires 'namespace::clean';
+requires 'Module::Runtime';
+requires 'List::Util';
+requires 'Try::Tiny';
