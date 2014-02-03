@@ -63,6 +63,7 @@ sub call {
          server => $env->{'harbinger.server'},
          ident  => $env->{'harbinger.ident'} || $env->{PATH_INFO},
          port   => $env->{'harbinger.port'} || $env->{SERVER_PORT},
+         count  => $env->{'harbinger.count'},
       );
 
       $self->_harbinger_client->send($doom)
