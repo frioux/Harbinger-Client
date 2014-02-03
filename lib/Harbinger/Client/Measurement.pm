@@ -39,6 +39,8 @@ has pid => (
    default => sub { $$ },
 );
 
+has count => ( is => 'rw' );
+
 has port => ( is => 'rw' );
 
 has milliseconds_elapsed => (
@@ -95,6 +97,7 @@ sub as_sereal {
       ms     => $self->milliseconds_elapsed,
       qc     => $self->db_query_count,
       mg     => $self->memory_growth_in_kb,
+      c      => $self->count,
    })
 }
 
