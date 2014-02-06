@@ -45,7 +45,7 @@ has port => ( is => 'rw' );
 
 has milliseconds_elapsed => (
    is => 'rw',
-   default => sub { 1000 * (time - $^T) },
+   default => 0,
 );
 
 has db_query_count => (
