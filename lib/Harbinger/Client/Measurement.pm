@@ -61,6 +61,9 @@ has _start_time => ( is => 'rw' );
 has _start_kb => ( is => 'rw' );
 has _ql => ( is => 'rw' );
 
+sub inc { $_[0]->count($_[0]->count + 1) }
+sub bode_ill { shift->inc }
+
 sub start {
    my ($self, @args) = @_;
 
