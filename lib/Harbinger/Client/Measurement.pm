@@ -39,9 +39,15 @@ has pid => (
    default => sub { $$ },
 );
 
-has count => ( is => 'rw' );
+has count => (
+   is => 'rw',
+   default => 0,
+);
 
-has port => ( is => 'rw' );
+has port => (
+   is => 'rw',
+   default => -1,
+);
 
 has milliseconds_elapsed => (
    is => 'rw',
