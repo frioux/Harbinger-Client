@@ -19,6 +19,7 @@ has _harbinger_port => (
 
 has _udp_handle => (
    is => 'ro',
+   lazy => 1,
    builder => sub {
       IO::Socket::INET->new(
          PeerAddr => $_[0]->_harbinger_ip,
