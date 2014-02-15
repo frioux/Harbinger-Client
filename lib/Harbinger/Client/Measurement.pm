@@ -46,7 +46,7 @@ has count => (
 
 has port => (
    is => 'rw',
-   default => -1,
+   default => 0,
 );
 
 has milliseconds_elapsed => (
@@ -101,12 +101,12 @@ sub as_sereal {
       server => $self->server,
       ident  => $self->ident,
       pid    => $self->pid,
-      port   => $self->port,
+      ( $self->port ? (port => $self->port) : () ),
 
-      ms     => $self->milliseconds_elapsed,
-      qc     => $self->db_query_count,
-      mg     => $self->memory_growth_in_kb,
-      c      => $self->count,
+      ( $self->milliseconds_elapsed ? (ms => $self->milliseconds_elapsed) : () ),
+      ( $self->db_query_count       ? (qc => $self->db_query_count)       : () ),
+      ( $self->memory_growth_in_kb  ? (mg => $self->memory_growth_in_kb)  : () ),
+      ( $self->count                ? (c  => $self->count)                : () ),
    })
 }
 
