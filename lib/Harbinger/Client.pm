@@ -1,6 +1,7 @@
 package Harbinger::Client;
 
 use Moo;
+use warnings NONFATAL => 'all';
 
 use Harbinger::Client::Measurement;
 use IO::Socket::INET;
@@ -25,7 +26,7 @@ has _udp_handle => (
          PeerAddr => $_[0]->_harbinger_ip,
          PeerPort => $_[0]->_harbinger_port,
          Proto => 'udp'
-      ) or die "couldn't connect to socket: $@" # might make this not so lethal
+      ) or warn "couldn't connect to socket: $@"
    },
 );
 
@@ -58,7 +59,8 @@ sub instant {
 sub send {
    my ($self, $doom) = @_;
 
-   my $msg = $doom->as_sereal;
+   return unless
+      my $msg = $doom->as_sereal;
 
    # seems appropriately defanged
    send($self->_udp_handle, $msg, 0) == length($msg)
