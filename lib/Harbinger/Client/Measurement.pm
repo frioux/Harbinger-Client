@@ -31,41 +31,16 @@ sub _measure_memory {
 
 use namespace::clean;
 
-has server => ( is => 'rw' );
-has ident => ( is => 'rw' );
-
 has pid => (
    is => 'rw',
    default => sub { $$ },
 );
 
-has count => (
-   is => 'rw',
-   default => 0,
-);
-
-has port => (
-   is => 'rw',
-   default => 0,
-);
-
-has milliseconds_elapsed => (
-   is => 'rw',
-   default => 0,
-);
-
-has db_query_count => (
-   is => 'rw',
-   default => 0,
-);
-has memory_growth_in_kb => (
-   is => 'rw',
-   default => sub { _measure_memory($$) },
-);
-
-has _start_time => ( is => 'rw' );
-has _start_kb => ( is => 'rw' );
-has _ql => ( is => 'rw' );
+has [qw(
+   server ident
+   count port milliseconds_elapsed db_query_count memory_growth_in_kb
+   _start_time _start_kb _ql
+)] => ( is => 'rw' );
 
 sub inc { $_[0]->count($_[0]->count + 1) }
 sub bode_ill { shift->inc }
