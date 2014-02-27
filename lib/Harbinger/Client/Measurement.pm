@@ -69,19 +69,32 @@ sub finish {
    return $self
 }
 
+my %mapping = (
+   port                 => 'port',
+   milliseconds_elapsed => 'ms',
+   db_query_count       => 'qc',
+   memory_growth_in_kb  => 'mg',
+   count                => 'c',
+);
 sub as_sereal {
    my $self = shift;
+
+   for my $thing (qw(server ident pid)) {
+      unless ($self->$thing) {
+         warn "$thing can't be blank!";
+         return
+      }
+   }
 
    return encode_sereal({
       server => $self->server,
       ident  => $self->ident,
       pid    => $self->pid,
-      ( $self->port ? (port => $self->port) : () ),
 
-      ( $self->milliseconds_elapsed ? (ms => $self->milliseconds_elapsed) : () ),
-      ( $self->db_query_count       ? (qc => $self->db_query_count)       : () ),
-      ( $self->memory_growth_in_kb  ? (mg => $self->memory_growth_in_kb)  : () ),
-      ( $self->count                ? (c  => $self->count)                : () ),
+      map {
+         my $m = $mapping{$_};
+         defined $self->$m ? ( $_ => 0 + $self->$m ) : ()
+      } keys %mapping
    })
 }
 
