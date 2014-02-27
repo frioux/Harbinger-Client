@@ -93,7 +93,7 @@ sub as_sereal {
 
       map {
          my $m = $mapping{$_};
-         defined $self->$m ? ( $_ => 0 + $self->$m ) : ()
+         defined $self->$_ ? ( $m => 0 + $self->$_ ) : ()
       } keys %mapping
    })
 }
