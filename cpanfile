@@ -5,4 +5,6 @@ requires Try::Tiny;
 requires Time::HiRes;
 requires Moo;
 requires namespace::clean;
-requires 'Plack';
+
+recommends 'Plack';
+recommends 'Catalyst' => 5.90053;
