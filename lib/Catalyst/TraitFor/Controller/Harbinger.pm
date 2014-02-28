@@ -12,7 +12,6 @@ around auto => sub {
    $c->model('DB')->storage->debugobj->replace_logger(
       harbinger => $env->{'harbinger.querylog'},
    );
-   $c->model('DB')->storage->debug(1);
 
    $self->$orig($c, @rest);
 };
