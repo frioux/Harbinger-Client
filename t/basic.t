@@ -10,6 +10,7 @@ use Test::Warn;
 use Harbinger::Client;
 
 ok(my $cl = Harbinger::Client->new, 'instantiation');
+local $ENV{HARBINGER_WARNINGS} = 1;
 warning_like { $cl->instant } qr/server can't be blank/, 'no server warns';
 warning_like { $cl->instant(server => 'a') } qr/ident can't be blank/, 'no ident warns';
 ok(!exception {

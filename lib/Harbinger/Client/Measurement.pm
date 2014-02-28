@@ -81,7 +81,7 @@ sub as_sereal {
 
    for my $thing (qw(server ident pid)) {
       unless ($self->$thing) {
-         warn "$thing can't be blank";
+         warn "$thing can't be blank" if $ENV{HARBINGER_WARNINGS};
          return
       }
    }

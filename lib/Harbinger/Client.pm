@@ -27,7 +27,7 @@ has _udp_handle => (
          PeerAddr => $_[0]->_harbinger_ip,
          PeerPort => $_[0]->_harbinger_port,
          Proto => 'udp'
-      ) or warn "couldn't connect to socket: $@"
+      ) or $ENV{HARBINGER_WARNINGS} && warn "couldn't connect to socket: $@"
    },
 );
 
@@ -64,12 +64,12 @@ sub send {
       my $msg = $doom->as_sereal;
 
    no warnings;
-   try {
+   &try(sub{
       send($self->_udp_handle, $msg, 0) == length($msg)
          or warn "cannot send to: $!";
-   } catch {
+   },($ENV{HARBINGER_WARNINGS}?(catch {
       warn $_;
-   };
+   }):()));
 }
 
 1;
