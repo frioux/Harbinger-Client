@@ -59,9 +59,11 @@ sub call {
    my $res = $self->app->($env);
 
    $self->response_cb($res, sub {
+      my $ident = $env->{'harbinger.ident'} || $env->{PATH_INFO};
+      $ident = "/$ident" unless $ident =~ m(^/);
       $doom->finish(
          server => $env->{'harbinger.server'},
-         ident  => $env->{'harbinger.ident'} || $env->{PATH_INFO},
+         ident  => $ident,
          port   => $env->{'harbinger.port'} || $env->{SERVER_PORT},
          count  => $env->{'harbinger.count'},
       );
