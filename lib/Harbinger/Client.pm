@@ -2,6 +2,7 @@ package Harbinger::Client;
 
 use Moo;
 use warnings NONFATAL => 'all';
+use Try::Tiny;
 
 use Harbinger::Client::Measurement;
 use IO::Socket::INET;
@@ -62,9 +63,13 @@ sub send {
    return unless
       my $msg = $doom->as_sereal;
 
-   # seems appropriately defanged
-   send($self->_udp_handle, $msg, 0) == length($msg)
-      or warn "cannot send to: $!";
+   no warnings;
+   try {
+      send($self->_udp_handle, $msg, 0) == length($msg)
+         or warn "cannot send to: $!";
+   } catch {
+      warn $_;
+   };
 }
 
 1;
