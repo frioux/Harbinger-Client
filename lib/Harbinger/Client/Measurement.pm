@@ -42,7 +42,7 @@ has [qw(
    _start_time _start_kb _ql
 )] => ( is => 'rw' );
 
-sub inc { $_[0]->count($_[0]->count + 1) }
+sub inc { $_[0]->count($_[0]->count||0 + 1) }
 sub bode_ill { shift->inc }
 
 sub start {
