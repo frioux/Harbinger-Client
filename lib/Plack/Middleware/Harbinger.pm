@@ -1,6 +1,7 @@
 package Plack::Middleware::Harbinger;
 
 use Moo;
+use warnings NONFATAL => 'all';
 
 extends 'Plack::Middleware';
 use Harbinger::Client;

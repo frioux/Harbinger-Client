@@ -6,6 +6,7 @@ use Sereal::Encoder 'encode_sereal';
 use Try::Tiny;
 use Time::HiRes;
 use Moo;
+use warnings NONFATAL => 'all';
 
 sub _measure_memory {
    my $pid = shift;

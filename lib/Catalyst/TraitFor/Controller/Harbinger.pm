@@ -1,6 +1,7 @@
 package Catalyst::TraitFor::Controller::Harbinger;
 
 use Moo::Role;
+use warnings NONFATAL => 'all';
 
 around auto => sub {
    my ($orig, $self, $c, @rest) = @_;
