@@ -56,7 +56,7 @@ sub call {
 
    my $doom = $self->_harbinger_client->start;
    # this needs to somehow pass through / wrap the other logger too
-   $env->{'harbinger.querylog'} = $doom->_ql;
+   $env->{'harbinger.querylog'} = $doom->query_logger;
    my $res = $self->app->($env);
 
    $self->response_cb($res, sub {

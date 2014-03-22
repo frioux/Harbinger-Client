@@ -40,7 +40,7 @@ has pid => (
 has [qw(
    server ident
    count port milliseconds_elapsed db_query_count memory_growth_in_kb
-   _start_time _start_kb _ql
+   _start_time _start_kb query_logger
 )] => ( is => 'rw' );
 
 sub inc { $_[0]->count($_[0]->count||0 + 1) }
@@ -52,7 +52,7 @@ sub start {
    shift->new({
       _start_time => [ Time::HiRes::gettimeofday ],
       _start_kb => _measure_memory($$),
-      _ql => use_module('DBIx::Class::QueryLog')->new,
+      query_logger => use_module('DBIx::Class::QueryLog')->new,
       @args,
    })
 }
@@ -63,7 +63,7 @@ sub finish {
    $self->milliseconds_elapsed(
       int(Time::HiRes::tv_interval($self->_start_time) * 1000)
    );
-   $self->db_query_count($self->_ql->count);
+   $self->db_query_count($self->query_logger->count);
    $self->memory_growth_in_kb(_measure_memory($self->pid) - $self->_start_kb);
    $self->$_($args{$_}) for keys %args;
 
