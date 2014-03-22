@@ -77,7 +77,7 @@ my %mapping = (
    memory_growth_in_kb  => 'mg',
    count                => 'c',
 );
-sub as_sereal {
+sub _as_sereal {
    my $self = shift;
 
    for my $thing (qw(server ident pid)) {

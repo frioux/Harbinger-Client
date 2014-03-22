@@ -61,7 +61,7 @@ sub send {
    my ($self, $doom) = @_;
 
    return unless
-      my $msg = $doom->as_sereal;
+      my $msg = $doom->_as_sereal;
 
    no warnings;
    &try(sub{
