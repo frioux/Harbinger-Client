@@ -4,7 +4,7 @@ use Moo;
 use warnings NONFATAL => 'all';
 use Try::Tiny;
 
-use Harbinger::Client::Measurement;
+use Harbinger::Client::Doom;
 use IO::Socket::INET;
 
 has _harbinger_ip => (
@@ -40,7 +40,7 @@ has _default_args => (
 sub start {
    my $self = shift;
 
-   Harbinger::Client::Measurement->start(
+   Harbinger::Client::Doom->start(
       @{$self->_default_args},
       @_,
    )
@@ -50,7 +50,7 @@ sub instant {
    my $self = shift;
 
    $self->send(
-      Harbinger::Client::Measurement->new(
+      Harbinger::Client::Doom->new(
          @{$self->_default_args},
          @_,
       )
