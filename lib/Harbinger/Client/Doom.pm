@@ -43,8 +43,7 @@ has [qw(
    _start_time _start_kb query_logger
 )] => ( is => 'rw' );
 
-sub inc { $_[0]->count($_[0]->count||0 + 1) }
-sub bode_ill { shift->inc }
+sub bode_ill { $_[0]->count($_[0]->count||0 + 1) }
 
 sub start {
    my ($self, @args) = @_;
