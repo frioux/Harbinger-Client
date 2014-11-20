@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+ - Fix a warning that did not respect the HARBINGER_WARNINGS flag
+  (thanks Wes Malone!)
+
 
 0.001000  2014-03-25 18:33:43-05:00 America/Chicago
  - Initial Release
