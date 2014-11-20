@@ -70,7 +70,7 @@ sub send {
    no warnings;
    &try(sub{
       send($self->_udp_handle, $msg, 0) == length($msg)
-         or warn "cannot send to: $!";
+         or $ENV{HARBINGER_WARNINGS} && warn "cannot send to: $!";
    },($ENV{HARBINGER_WARNINGS}?(catch {
       warn $_;
    }):()));
