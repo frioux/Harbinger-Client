@@ -149,7 +149,7 @@ Takes a hash of C<harbinger_ip> (default of C<127.0.0.1>), C<harbinger_port>
 (default of C<8001>), and C<default_args> (default of C<[]>).
 
 C<harbinger_ip> and C<harbinger_port> are how to connect to the remote
-C<HarBinger::Server>.
+C<Harbinger::Server>.
 
 C<default_args> get used in L</start> and L</instant> when forging new L</DOOM 💀>.
 
